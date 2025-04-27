@@ -1,0 +1,637 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: black;
+            color: white;
+            line-height: 1.5;
+        }
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            padding: 1.25rem 4%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            transition: background-color 0.3s;
+        }
+        .header.scrolled {
+            background-color: black;
+        }
+        .logo {
+            width: 9.25rem;
+            height: auto;
+        }
+        .nav-links {
+            display: none;
+        }
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .language-select {
+            display: flex;
+            align-items: center;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            background: transparent;
+            color: white;
+        }
+        .sign-in-button {
+            background-color: #e50914;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: background-color 0.2s;
+        }
+        .sign-in-button:hover {
+            background-color: #f40612;
+        }
+        .hero {
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 0 4%;
+            background-image: url('https://assets.nflxext.com/ffe/siteui/vlv3/9390f6f6-cf80-4bc9-8981-8c2cc8adf98a/web/IN-en-20250421-TRIFECTA-perspective_dc5bcfdf-88a5-4972-8ffe-b28ff942f76e_large.jpg');
+            background-size: cover;
+            background-position: center;
+        }
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.6);
+            z-index: 0;
+        }
+        .hero-content {
+            max-width: 950px;
+            position: relative;
+            z-index: 1;
+        }
+        .hero-title {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+        .hero-subtitle {
+            font-size: 1.25rem;
+            margin-bottom: 1.5rem;
+        }
+        .email-signup {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            max-width: 36rem;
+            margin: 0 auto;
+        }
+        .email-input {
+            height: 3.5rem;
+            padding: 0.5rem 1rem;
+            font-size: 1rem;
+            border: 1px solid #8c8c8c;
+            border-radius: 4px;
+            background: rgba(22, 22, 22, 0.7);
+            color: white;
+        }
+        .get-started-button {
+            background-color: #e50914;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            font-size: 1.25rem;
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+        .get-started-button:hover {
+            background-color: #f40612;
+        }
+        .trending-section {
+            background: #000;
+            padding: 4.5rem 4%;
+            position: relative;
+            z-index: 2;
+            margin-top: -30px;
+            border-top: 2px solid #FF0080;
+        }
+        .trending-gradient {
+            height: 40px;
+            width: 100%;
+            background: linear-gradient(180deg, #141927 0%, transparent 100%);
+            position: absolute;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+        }
+        .trending-carousel {
+            display: flex;
+            overflow-x: auto;
+            padding: 1.5rem 0 1rem 1%;
+            gap: 1.5rem;
+            scroll-behavior: smooth;
+        }
+        .trending-item {
+            min-width: 185px;
+            width: 185px;
+            height: 260px;
+            background: #181818;
+            border-radius: 0.875rem;
+            position: relative;
+            transition: transform 0.3s;
+            flex-shrink: 0;
+        }
+        .trending-item:hover {
+            transform: scale(1.05);
+            z-index: 2;
+        }
+        .trending-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 0.875rem;
+        }
+        .trending-rank {
+            position: absolute;
+            left: -14px;
+            bottom: 10px;
+            font-size: 4.5rem;
+            font-weight: 900;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            -webkit-text-stroke: 2px #232324;
+        }
+        .filter-section {
+            padding: 3rem 4%;
+            background: #141414;
+        }
+        .filter-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .filter-toggle {
+            display: flex;
+            background: #2a2a2a;
+            border-radius: 2rem;
+            padding: 0.25rem;
+            width: fit-content;
+            margin-bottom: 2rem;
+        }
+        .filter-toggle button {
+            padding: 0.75rem 2rem;
+            border: none;
+            border-radius: 1.5rem;
+            background: transparent;
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .filter-toggle button.active {
+            background: #e50914;
+        }
+        .filter-pills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            margin-bottom: 2rem;
+        }
+        .filter-pill {
+            padding: 0.5rem 1.25rem;
+            border: none;
+            border-radius: 1.5rem;
+            background: #2a2a2a;
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .filter-pill:hover {
+            background: #333;
+        }
+        .filter-pill.active {
+            background: #e50914;
+        }
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 1rem;
+            padding: 1rem 0;
+        }
+        .result-item {
+            position: relative;
+            aspect-ratio: 2/3;
+            border-radius: 0.5rem;
+            overflow: hidden;
+            transition: transform 0.3s;
+        }
+        .result-item:hover {
+            transform: scale(1.05);
+            z-index: 2;
+        }
+        .result-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .result-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 1rem;
+            background: linear-gradient(transparent, rgba(0,0,0,0.9));
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .result-item:hover .result-overlay {
+            opacity: 1;
+        }
+        .result-title {
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+        .result-genres {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.25rem;
+        }
+        .genre-tag {
+            font-size: 0.7rem;
+            padding: 0.125rem 0.5rem;
+            background: rgba(229, 9, 20, 0.7);
+            border-radius: 2px;
+        }
+        .more-reasons {
+            padding: 4.5rem 4%;
+            text-align: center;
+        }
+        .reasons-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2rem;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+        .reason-card {
+            background: linear-gradient(135deg, #232749 0%, #311e27 100%);
+            border-radius: 2rem;
+            padding: 2.5rem;
+            width: 300px;
+            text-align: left;
+            transition: transform 0.3s;
+        }
+        .reason-card:hover {
+            transform: translateY(-8px);
+        }
+        .faq {
+            padding: 4.5rem 4%;
+            border-bottom: 8px solid #222;
+        }
+        .faq-title {
+            text-align: center;
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 2rem;
+        }
+        .faq-list {
+            max-width: 815px;
+            margin: 0 auto;
+        }
+        .faq-item {
+            margin-bottom: 0.5rem;
+        }
+        .faq-question {
+            background: #2D2D2D;
+            padding: 1.5rem;
+            width: 100%;
+            text-align: left;
+            border: none;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .faq-answer {
+            background: #2D2D2D;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s;
+        }
+        .faq-answer.active {
+            max-height: 1200px;
+            padding: 1.5rem;
+        }
+        .footer {
+            padding: 4.5rem 4%;
+            color: #737373;
+        }
+        .footer-content {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        .footer-links {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+        .footer-link {
+            color: #737373;
+            text-decoration: none;
+        }
+        .footer-link:hover {
+            text-decoration: underline;
+        }
+        @media (min-width: 768px) {
+            .hero-title {
+                font-size: 3rem;
+            }
+            .email-signup {
+                flex-direction: row;
+            }
+            .nav-links {
+                display: flex;
+                gap: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <svg viewBox="0 0 111 30" class="logo" aria-hidden="true" focusable="false">
+            <g fill="#e50914">
+                <path d="M105.06233,14.2806261 L110.999156,30 C109.249227,29.7497422 107.500234,29.4366857 105.718437,29.1554972 L102.374168,20.4686475 L98.9371075,28.4375293 C97.2499766,28.1563408 95.5928391,28.061674 93.9057081,27.8432843 L99.9372012,14.0931671 L94.4680851,-5.68434189e-14 L99.5313525,-5.68434189e-14 L102.593495,7.87421502 L105.874965,-5.68434189e-14 L110.999156,-5.68434189e-14 L105.06233,14.2806261 Z M90.4686475,-5.68434189e-14 L85.8749649,-5.68434189e-14 L85.8749649,27.2499766 C87.3746368,27.3437061 88.9371075,27.4055675 90.4686475,27.5930265 L90.4686475,-5.68434189e-14 Z M81.9055207,26.93692 C77.7186241,26.6557316 73.5307901,26.4064111 69.250164,26.3117443 L69.250164,-5.68434189e-14 L73.9366389,-5.68434189e-14 L73.9366389,21.8745899 C76.6248008,21.9373887 79.3120255,22.1557784 81.9055207,22.2804387 L81.9055207,26.93692 Z M64.2496954,10.6561065 L64.2496954,15.3435186 L57.8442216,15.3435186 L57.8442216,25.9996251 L53.2186709,25.9996251 L53.2186709,-5.68434189e-14 L66.3436123,-5.68434189e-14 L66.3436123,4.68741213 L57.8442216,4.68741213 L57.8442216,10.6561065 L64.2496954,10.6561065 Z M45.3435186,4.68741213 L45.3435186,26.2498828 C43.7810479,26.2498828 42.1876465,26.2498828 40.6561065,26.3117443 L40.6561065,4.68741213 L35.8121661,4.68741213 L35.8121661,-5.68434189e-14 L50.2183897,-5.68434189e-14 L50.2183897,4.68741213 L45.3435186,4.68741213 Z M30.749836,15.5928391 C28.687787,15.5928391 26.2498828,15.5928391 24.4999531,15.6875059 L24.4999531,22.6562939 C27.2499766,22.4678976 30,22.2495079 32.7809542,22.1557784 L32.7809542,26.6557316 L19.812541,27.6876933 L19.812541,-5.68434189e-14 L32.7809542,-5.68434189e-14 L32.7809542,4.68741213 L24.4999531,4.68741213 L24.4999531,10.9991564 C26.3126816,10.9991564 29.0936358,10.9054269 30.749836,10.9054269 L30.749836,15.5928391 Z M4.78114163,12.9684132 L4.78114163,29.3429562 C3.09401069,29.5313525 1.59340144,29.7497422 0,30 L0,-5.68434189e-14 L4.4690224,-5.68434189e-14 L10.562377,17.0315868 L10.562377,-5.68434189e-14 L15.2497891,-5.68434189e-14 L15.2497891,28.061674 C13.5935889,28.3437998 11.906458,28.4375293 10.1246602,28.6868498 L4.78114163,12.9684132 Z"></path>
+            </g>
+        </svg>
+        <div class="header-right">
+            <button class="language-select">
+                <span>English</span>
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                    <path d="M8 11L4 7h8l-4 4z" fill="currentColor"/>
+                </svg>
+            </button>
+            <a href="#" class="sign-in-button">Sign In</a>
+        </div>
+    </header>
+    <section class="hero">
+        <div class="hero-content">
+            <h1 class="hero-title">Unlimited movies, TV shows, and more</h1>
+            <p class="hero-subtitle">Watch anywhere. Cancel anytime.</p>
+            <p class="hero-subtitle">Ready to watch? Enter your email to create or restart your membership.</p>
+            <form class="email-signup">
+                <input type="email" class="email-input" placeholder="Email address" required>
+                <button type="submit" class="get-started-button">
+                    Get Started
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                        <path d="M8.5 5l7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                </button>
+            </form>
+        </div>
+    </section>
+    <section class="trending-section">
+        <div class="trending-gradient"></div>
+        <h2 style="margin-bottom: 1rem">Trending Now</h2>
+        <div class="trending-carousel" id="trending-carousel">
+        </div>
+    </section>
+    <section class="filter-section">
+        <div class="filter-container">
+            <h2 style="margin-bottom: 2rem">Personalized Recommendations</h2>
+            <div class="filter-toggle">
+                <button class="active" onclick="setFilterMode('mood')">By Mood</button>
+                <button onclick="setFilterMode('genre')">By Genre</button>
+            </div>
+            <div class="filter-pills" id="filter-pills">
+            </div>
+            <div class="results-grid" id="results-grid">
+            </div>
+        </div>
+    </section>
+    <section class="more-reasons">
+        <h2>More reasons to join</h2>
+        <div class="reasons-row">
+            <div class="reason-card">
+                <h3>Enjoy on your TV</h3>
+                <p>Watch on smart TVs, PlayStation, Xbox, Chromecast, Apple TV, Blu-ray players and more.</p>
+            </div>
+            <div class="reason-card">
+                <h3>Download your shows to watch offline</h3>
+                <p>Save your favourites easily and always have something to watch.</p>
+            </div>
+            <div class="reason-card">
+                <h3>Watch everywhere</h3>
+                <p>Stream unlimited movies and TV shows on your phone, tablet, laptop and TV.</p>
+            </div>
+            <div class="reason-card">
+                <h3>Create profiles for kids</h3>
+                <p>Send kids on adventures with their favourite characters in a space made just for them — free with your membership.</p>
+            </div>
+        </div>
+    </section>
+    <section class="faq">
+        <h2 class="faq-title">Frequently Asked Questions</h2>
+        <div class="faq-list">
+        </div>
+        <div style="text-align: center; margin-top: 3rem;">
+            <p class="hero-subtitle">Ready to watch? Enter your email to create or restart your membership.</p>
+            <form class="email-signup" style="margin-top: 1rem;">
+                <input type="email" class="email-input" placeholder="Email address" required>
+                <button type="submit" class="get-started-button">
+                    Get Started
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                        <path d="M8.5 5l7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                </button>
+            </form>
+        </div>
+    </section>
+    <footer class="footer">
+        <div class="footer-content">
+            <p>Questions? Call 1-844-505-2993</p>
+            <div class="footer-links">
+                <a href="#" class="footer-link">FAQ</a>
+                <a href="#" class="footer-link">Help Center</a>
+                <a href="#" class="footer-link">Account</a>
+                <a href="#" class="footer-link">Media Center</a>
+                <a href="#" class="footer-link">Investor Relations</a>
+                <a href="#" class="footer-link">Jobs</a>
+                <a href="#" class="footer-link">Ways to Watch</a>
+                <a href="#" class="footer-link">Terms of Use</a>
+                <a href="#" class="footer-link">Privacy</a>
+                <a href="#" class="footer-link">Cookie Preferences</a>
+                <a href="#" class="footer-link">Corporate Information</a>
+                <a href="#" class="footer-link">Contact Us</a>
+                <a href="#" class="footer-link">Speed Test</a>
+                <a href="#" class="footer-link">Legal Notices</a>
+                <a href="#" class="footer-link">Only on Netflix</a>
+            </div>
+            <button class="language-select">
+                <span>English</span>
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                    <path d="M8 11L4 7h8l-4 4z" fill="currentColor"/>
+                </svg>
+            </button>
+            <p style="margin-top: 1.5rem;">Netflix United States</p>
+        </div>
+    </footer>
+    <script>
+        const moviesData = [
+            {
+                id: 1,
+                title: "Chhaava",
+                imageUrl: "https://cuttingshots.com/wp-content/uploads/akshaye-khanna-chhaava-poster-2-819x1024.jpg",
+                genres: ["Action", "Historical", "Drama"],
+                mood: ["Intense", "Epic"]
+            },
+            {
+                id: 2,
+                title: "Court",
+                imageUrl: "https://m.media-amazon.com/images/M/MV5BMzVlNjRhMjgtMWFiZC00ZmM4LThjOGItN2Q4YmY3MmViNTJkXkEyXkFqcGdeQXVyODE5NzE3OTE@._V1_.jpg",
+                genres: ["Drama", "Legal", "Social"],
+                mood: ["Thought-provoking", "Serious"]
+            },
+        ];
+        const trendingCarousel = document.getElementById('trending-carousel');
+        moviesData.forEach((movie, index) => {
+            const item = document.createElement('div');
+            item.className = 'trending-item';
+            item.innerHTML = `
+                <img src="${movie.imageUrl}" alt="${movie.title}">
+                <span class="trending-rank">${index + 1}</span>
+            `;
+            trendingCarousel.appendChild(item);
+        });
+        let currentFilter = 'mood';
+        let selectedFilter = null;
+        const allMoods = Array.from(new Set(moviesData.flatMap(movie => movie.mood)));
+        const allGenres = Array.from(new Set(moviesData.flatMap(movie => movie.genres)));
+        function setFilterMode(mode) {
+            currentFilter = mode;
+            selectedFilter = null;
+            updateFilterPills();
+            updateResults();
+            document.querySelectorAll('.filter-toggle button').forEach(btn => {
+                btn.classList.toggle('active', btn.textContent.toLowerCase().includes(mode));
+            });
+        }
+        function updateFilterPills() {
+            const pillsContainer = document.getElementById('filter-pills');
+            pillsContainer.innerHTML = '';
+            const items = currentFilter === 'mood' ? allMoods : allGenres;
+            items.forEach(item => {
+                const pill = document.createElement('button');
+                pill.className = `filter-pill ${item === selectedFilter ? 'active' : ''}`;
+                pill.textContent = item;
+                pill.onclick = () => selectFilter(item);
+                pillsContainer.appendChild(pill);
+            });
+        }
+        function selectFilter(filter) {
+            selectedFilter = selectedFilter === filter ? null : filter;
+            updateFilterPills();
+            updateResults();
+        }
+        function updateResults() {
+            const resultsGrid = document.getElementById('results-grid');
+            resultsGrid.innerHTML = '';
+            const filteredMovies = selectedFilter 
+                ? moviesData.filter(movie => 
+                    currentFilter === 'mood' 
+                        ? movie.mood.includes(selectedFilter)
+                        : movie.genres.includes(selectedFilter)
+                )
+                : [];
+            if (filteredMovies.length === 0) {
+                resultsGrid.innerHTML = `
+                    <div style="grid-column: 1/-1; text-align: center; padding: 2rem;">
+                        ${selectedFilter ? 'No movies found' : 'Select a filter to see recommendations'}
+                    </div>
+                `;
+                return;
+            }
+            filteredMovies.forEach(movie => {
+                const item = document.createElement('div');
+                item.className = 'result-item';
+                item.innerHTML = `
+                    <img src="${movie.imageUrl}" alt="${movie.title}">
+                    <div class="result-overlay">
+                        <h3 class="result-title">${movie.title}</h3>
+                        <div class="result-genres">
+                            ${movie.genres.map(genre => 
+                                `<span class="genre-tag">${genre}</span>`
+                            ).join('')}
+                        </div>
+                    </div>
+                `;
+                resultsGrid.appendChild(item);
+            });
+        }
+        setFilterMode('mood');
+        window.addEventListener('scroll', () => {
+            const header = document.querySelector('.header');
+            header.classList.toggle('scrolled', window.scrollY > 0);
+        });
+        const faqData = [
+            {
+                question: "What is Netflix?",
+                answer: "Netflix is a streaming service that offers a wide variety of award-winning TV shows, movies, anime, documentaries, and more on thousands of internet-connected devices."
+            },
+        ];
+        const faqList = document.querySelector('.faq-list');
+        faqData.forEach((item, index) => {
+            const faqItem = document.createElement('div');
+            faqItem.className = 'faq-item';
+            faqItem.innerHTML = `
+                <button class="faq-question" onclick="toggleFaq(${index})">
+                    ${item.question}
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" class="faq-icon">
+                        <path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                </button>
+                <div class="faq-answer">
+                    <p>${item.answer}</p>
+                </div>
+            `;
+            faqList.appendChild(faqItem);
+        });
+        function toggleFaq(index) {
+            const answers = document.querySelectorAll('.faq-answer');
+            const icons = document.querySelectorAll('.faq-icon');
+            
+            answers.forEach((answer, i) => {
+                if (i === index) {
+                    answer.classList.toggle('active');
+                    icons[i].style.transform = answer.classList.contains('active') ? 'rotate(45deg)' : 'none';
+                } else {
+                    answer.classList.remove('active');
+                    icons[i].style.transform = 'none';
+                }
+            });
+        }
+    </script>
+</body>
+</html>
